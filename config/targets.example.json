@@ -1,0 +1,4 @@
+[
+  { "name": "web-01", "type": "tcp", "host": "203.0.113.10", "port": 443 },
+  { "name": "web-02", "type": "http", "url": "https://example.com/health" }
+]

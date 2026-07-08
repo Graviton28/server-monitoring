@@ -1,0 +1,18 @@
+{
+  "name": "server-monitoring",
+  "version": "1.0.0",
+  "description": "Pushes server health metrics (agent-based) or reachability checks (agentless) to Loki for viewing in Grafana.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "agent": "node src/agent/index.js",
+    "external": "node src/external/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "systeminformation": "^5.22.11"
+  }
+}
