@@ -14,6 +14,8 @@ npm install
 cp .env.example .env   # fill in LOKI_URL and auth
 ```
 
+For agent mode specifically, see [INSTALL.txt](./INSTALL.txt) for a one-line install command to run directly on a server.
+
 Ask whoever runs your Loki instance for:
 - the push URL (`LOKI_URL`, the script POSTs to `${LOKI_URL}/loki/api/v1/push`)
 - how it's authenticated — Basic auth (`LOKI_USER` + `LOKI_API_KEY`, e.g. Grafana Cloud) or `LOKI_ORG_ID` (self-hosted multi-tenant Loki). Leave both blank only if you've confirmed the endpoint has no auth — see the security note below.
