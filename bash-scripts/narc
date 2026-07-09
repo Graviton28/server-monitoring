@@ -1,0 +1,38 @@
+#!/bin/bash
+#Updated by Henry Fricke on 7/9/2026
+
+systems_file="/home/researchtech/server_monitoring_scripts/systems"
+
+echo -e "
+███╗   ██╗ █████╗ ██████╗  ██████╗
+████╗  ██║██╔══██╗██╔══██╗██╔════╝
+██╔██╗ ██║███████║██████╔╝██║
+██║╚██╗██║██╔══██║██╔══██╗██║
+██║ ╚████║██║  ██║██║  ██║╚██████╗
+╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ v1.0"
+
+while IFS='|' read -r host name dept owner; do
+	[ -z "$host" ] && continue
+	case "$host" in \#*) continue ;; esac
+	output=$(ssh -o ConnectTimeout=5 -o BatchMode=yes "$host" bash -s <<'REMOTE' 2>/dev/null
+grep PRETTY_NAME /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"'
+echo "Uptime: $(uptime -p 2>/dev/null)"
+echo "Load (1/5/15 min): $(cut -d' ' -f1-3 /proc/loadavg 2>/dev/null)"
+echo "Memory: $(free -m | awk 'NR==2{print $3"MB used / "$2"MB total"}')"
+echo "Disk (/): $(df -h / | awk 'NR==2{print $3" used / "$2" total (" $5 " full)"}')"
+echo "Last reboot: $(who -b 2>/dev/null | awk '{print $3, $4}')"
+echo "Top processes (cpu%, mem%, cmd):"
+ps -eo pcpu,pmem,comm --sort=-pcpu 2>/dev/null | head -4 | tail -3
+echo "Failed services:"
+systemctl --failed 2>/dev/null | grep "● " || echo "  none"
+REMOTE
+)
+	os=$(echo "$output" | head -1)
+	body=$(echo "$output" | tail -n +2)
+	echo -e "\n== $name ($host) — ${os:-unreachable} — $(date '+%Y-%m-%d %H:%M:%S') =="
+	if [ -n "$body" ]; then
+		echo "$body"
+	else
+		echo "unreachable"
+	fi
+done < "$systems_file"

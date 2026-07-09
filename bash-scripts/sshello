@@ -1,0 +1,14 @@
+#!/bin/bash
+#Updated by Henry Fricke on 7/9/2026
+
+systems_file="/home/researchtech/server_monitoring_scripts/systems"
+
+while IFS='|' read -r host name dept owner; do
+	[ -z "$host" ] && continue
+	case "$host" in \#*) continue ;; esac
+	if { timeout 1 bash -c "echo > /dev/tcp/$host/22"; } 2>/dev/null; then
+		[ "$1" = "down" ] || echo "up: $name ($host) — $dept, owner: $owner"
+	else
+		echo "down: $name ($host) — $dept, owner: $owner"
+	fi
+done < "$systems_file" | sort

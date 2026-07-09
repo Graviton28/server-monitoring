@@ -2,6 +2,8 @@
 
 Pushes server health data to [Loki](https://grafana.com/oss/loki/) so it can be viewed in an existing Grafana dashboard. Two independent modes, pick whichever fits a given server:
 
+> This repo also holds [`bash-scripts/`](./bash-scripts/), a separate, older agentless cron setup already running in production on one desktop. It's unrelated to the Loki agent/external modes below — see its own README.
+
 - **`agent`** — installed and run *on* a server you control. Reads real local metrics (uptime, CPU load, crash/restart history) and pushes them out. Requires the server owner to be okay with something running on their machine.
 - **`external`** — run from *one central place*, checks other servers over the network (TCP connect / HTTP request) without installing anything on them. Only tells you reachability + latency, not internal metrics like CPU load.
 
