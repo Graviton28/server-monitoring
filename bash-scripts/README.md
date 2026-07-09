@@ -4,22 +4,22 @@ Old-school agentless monitoring, running from cron on one desktop (`freakyipa01`
 
 Two gitignored files hold the config (real data stays on the server, never in this repo):
 
-- **`systems`** — `host|name|dept|owner`, one line per server.
+- **`systems`** — `host|name|dept|owner|user`, one line per server. `user` is optional: blank means SSH as the default user, a real name overrides it (some hosts use a different account than `researchtech`), and `WIP` means "known but no working SSH access yet" — `narc` skips those cleanly instead of failing.
 - **`emails`** — who gets the morning report, one address per line.
 
 ## Scripts
 
 - **`sshello`** — TCP-connects to port 22 on everything in `systems`, prints up/down + owner. No SSH key needed. Pass `down` as an arg to only print failures.
 - **`snitch`** — same idea, but for CARC's own boxes (Hopper, Easley, freeipa, Coldfront, Mokey), checking whatever ports each one actually runs, not just 22.
-- **`narc`** — the real diagnostics. Needs an SSH key set up on each host first. Grabs OS, uptime, load, memory, disk, last reboot, top processes, and failed services. Doubles as the data feed for the future Loki/Grafana dashboard.
+- **`narc`** — the real diagnostics. Needs an SSH key set up on each host first (skips anything tagged `WIP` in `systems`). Grabs OS, uptime, load, memory, disk, last reboot, top processes, and failed services. Doubles as the data feed for the future Loki/Grafana dashboard.
 - **`sshello_email.sh`** — the daily report: `snitch` + `sshello` in the email body, plus a fresh `narc` run attached as a log file.
 
 ## Cron
 
 ```
-30 7 * * 1-5   sshello_email.sh                      # weekday mornings, 7:30am
-5  *  * * *    sshello -> sshello_logs/sshello.log    # hourly, rotated weekly
-10 *  * * *    narc -> narc_logs/narc_<timestamp>.log  # hourly, fresh file every run
+30 7 * * 1-5   sshello_email.sh                          # weekday mornings, 7:30am
+5  *  * * *    sshello -> sshello_logs/sshello.log        # hourly, rotated weekly
+10 *  * * *    narc -> narc_logs/narc-log-<timestamp>.log  # hourly, fresh file every run
                (both log dirs cleaned out after 60 days)
 ```
 

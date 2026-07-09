@@ -5,7 +5,7 @@ to_list=$(paste -sd',' /home/researchtech/server_monitoring_scripts/emails)
 boundary="NARC-$(date +%s)"
 
 narc_output=$(/home/researchtech/server_monitoring_scripts/narc)
-log_file="/home/researchtech/server_monitoring_scripts/narc_logs/narc_$(date +%Y%m%d_%H%M).log"
+log_file="/home/researchtech/server_monitoring_scripts/narc_logs/narc-log-$(date +%Y%m%d_%H%M).log"
 echo "$narc_output" > "$log_file"
 log_name=$(basename "$log_file")
 

@@ -9,12 +9,18 @@ echo -e "
 ██╔██╗ ██║███████║██████╔╝██║
 ██║╚██╗██║██╔══██║██╔══██╗██║
 ██║ ╚████║██║  ██║██║  ██║╚██████╗
-╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ v1.0"
+╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ v1.2"
 
-while IFS='|' read -r host name dept owner; do
+while IFS='|' read -r host name dept owner user; do
 	[ -z "$host" ] && continue
 	case "$host" in \#*) continue ;; esac
-	output=$(ssh -o ConnectTimeout=5 -o BatchMode=yes "$host" bash -s <<'REMOTE' 2>/dev/null
+	if [ "$user" = "WIP" ]; then
+		echo -e "\n== $name ($host) — WIP: no SSH access set up yet =="
+		continue
+	fi
+	target="$host"
+	[ -n "$user" ] && target="$user@$host"
+	output=$(ssh -o ConnectTimeout=5 -o BatchMode=yes "$target" bash -s <<'REMOTE' 2>/dev/null
 grep PRETTY_NAME /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '"'
 echo "Uptime: $(uptime -p 2>/dev/null)"
 echo "Load (1/5/15 min): $(cut -d' ' -f1-3 /proc/loadavg 2>/dev/null)"

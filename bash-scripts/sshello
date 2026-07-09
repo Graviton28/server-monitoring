@@ -3,7 +3,7 @@
 
 systems_file="/home/researchtech/server_monitoring_scripts/systems"
 
-while IFS='|' read -r host name dept owner; do
+while IFS='|' read -r host name dept owner user; do
 	[ -z "$host" ] && continue
 	case "$host" in \#*) continue ;; esac
 	if { timeout 1 bash -c "echo > /dev/tcp/$host/22"; } 2>/dev/null; then
