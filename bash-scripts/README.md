@@ -23,8 +23,14 @@ Two gitignored files hold the config (real data stays on the server, never in th
                (both log dirs cleaned out after 60 days)
 ```
 
-## Adding a host
+## Adding a host or email recipient
 
-1. Add a line to `systems`.
-2. `sshello` picks it up automatically. `snitch`'s CARC list is hardcoded, so add CARC boxes there directly.
-3. For `narc` to reach it: `ssh-copy-id <host>`.
+```bash
+# add a new system (host|name|dept|owner)
+echo "newhost.unm.edu|NewHost|Dept|Owner Name" >> systems
+
+# add a new email recipient
+echo "someone@unm.edu" >> emails
+```
+
+`sshello` picks up new systems automatically. `snitch`'s CARC list is hardcoded, so add CARC boxes there directly. For `narc` to reach a new host: `ssh-copy-id <host>`.
