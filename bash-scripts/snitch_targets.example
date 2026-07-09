@@ -1,0 +1,2 @@
+host.example.edu|HostName|22,8000
+another-host.example.edu|AnotherHost|22,111,80,443

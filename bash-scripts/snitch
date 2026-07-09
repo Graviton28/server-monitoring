@@ -9,19 +9,22 @@ echo -e "
 ███████║ ██║ ╚████║ ██║    ██║    ╚██████╗ ██║  ██║
 ╚══════╝ ╚═╝  ╚═══╝ ╚═╝    ╚═╝     ╚═════╝ ╚═╝  ╚═╝ v1.3"
 
+targets_file="/home/researchtech/server_monitoring_scripts/snitch_targets"
+
 check_host() {
-	local name="$1" host="$2"; shift 2
-	for port in "$@"; do
-		{ timeout 1 bash -c "echo > /dev/tcp/$host/$port"; } 2>/dev/null || { echo "down: $name ($host)"; return; }
+	local name="$1" host="$2" ports="$3"
+	IFS=',' read -ra port_list <<< "$ports"
+	for port in "${port_list[@]}"; do
+		if ! { timeout 1 bash -c "echo > /dev/tcp/$host/$port"; } 2>/dev/null; then
+			echo "down: $name ($host)"
+			return
+		fi
 	done
 	echo "up: $name ($host)"
 }
 
-check_host Hopper redacted-carc-host.example.edu 22 8000
-check_host Hopper-io redacted-carc-host.example.edu 22 2049
-check_host Hopper-sn redacted-carc-host.example.edu 22 2049
-check_host Easley redacted-carc-host.example.edu 22 80 443 111 8000
-check_host Freeipa01 redacted-carc-host.example.edu 22 80 443
-check_host Freeipa02 redacted-carc-host.example.edu 22 80 443
-check_host Coldfront redacted-carc-host.example.edu 22 111 80 443
-check_host Mokey redacted-carc-host.example.edu 22 111 80 443
+while IFS='|' read -r host name ports; do
+	[ -z "$host" ] && continue
+	case "$host" in \#*) continue ;; esac
+	check_host "$name" "$host" "$ports"
+done < "$targets_file"

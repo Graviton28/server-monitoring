@@ -4,3 +4,4 @@ node_modules/
 config/targets.json
 bash-scripts/systems
 bash-scripts/emails
+bash-scripts/snitch_targets
