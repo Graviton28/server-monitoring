@@ -11,7 +11,7 @@ What it does:
   - Runs npm install
   - Copies .env.example to .env if one doesn't already exist
 
-What it does NOT do (you still have to do this by hand afterward):
+What you need to do:
   - Fill in .env with the real LOKI_URL and credentials
   - Start the agent — either:
       npm run agent
