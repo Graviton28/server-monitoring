@@ -20,7 +20,7 @@ log_name=$(basename "$log_file")
 	echo "Content-Type: text/plain; charset=UTF-8"
 	echo
 	echo "CARC systems:"
-	/home/researchtech/server_monitoring_scripts/snitch
+	/home/researchtech/server_monitoring_scripts/snitch | grep -E "^(up|down):"
 	echo
 	echo "Remote systems:"
 	/home/researchtech/server_monitoring_scripts/sshello
