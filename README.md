@@ -1,10 +1,9 @@
 # server-monitoring
 
-Agentless monitoring running from cron on one desktop (`freakyipa01`, user `researchtech`). Just SSH/TCP checks from one central place, no installs on the servers being watched. Scripts live under [`bash-scripts/`](./bash-scripts/).
+Server monitoring using cron and bash scripts. Just SSH/TCP checks from one central place. Scripts available under [`bash-scripts/`](./bash-scripts/).
 
 ## Config
-
-Gitignored, real data stays on the server — see the `.example` file for format:
+Config files format
 
 - **`systems`** — `host|name|dept|owner|user`. `user`: blank = default SSH user, a name overrides it, `WIP` = no working SSH access yet (skipped by `narc`).
 - **`emails`** — recipients for the morning report, one per line.
@@ -12,9 +11,9 @@ Gitignored, real data stays on the server — see the `.example` file for format
 
 ## Scripts
 
-- **`sshello`** — TCP-connects to port 22 on everything in `systems`, prints up/down + dept/owner. No SSH key needed. `down` arg to only print failures.
-- **`snitch`** (v1.3) — same, for CARC's own boxes (Hopper, Hopper-io, Hopper-sn, Easley, freeipa01/02, Coldfront, Mokey), checking the actual ports each one runs (NFS, web, rpcbind), from `snitch_targets`.
-- **`narc`** (v1.2) — deeper diagnostics over SSH (needs a key first, skips `WIP` hosts): OS, uptime, load, memory, disk, last reboot, top processes, failed services.
+- **`sshello`** — TCP-connects to port 22 on everything in `systems`, prints up/down + dept/owner. `down` arg to only print failures.
+- **`snitch`** (v1.3) — same for CARC's own systems, checking the actual ports from `snitch_targets`.
+- **`narc`** (v1.2) — deeper diagnostics over SSH: OS, uptime, load, memory, disk, last reboot, top processes, failed services.
 - **`sshello_email.sh`** — daily report: `snitch` + `sshello` inline, plus a fresh `narc` run logged to `narc_logs/` and attached to the email.
 
 ## Cron
@@ -44,4 +43,3 @@ echo "newhost.alliance.unm.edu|NewHost|22,80,443" >> snitch_targets
 ## Planned features
 
 - **Loki/Grafana dashboard** — push `narc`'s data to Loki and display it on a Grafana dashboard, instead of it just sitting in `narc_logs/` as flat files.
-- **Resolving remaining `WIP` hosts** — Hopper\*, Easley\*, Coldfront, Mokey, CMB, and Nebula need SSH access as the `astech` user rather than `researchtech`; the three LOBO boxes (`CASLMSQLSQLP01`, `CARCLRSCHAPPP01`, `CARCLRSCHAPPP44`) need credentials tracked down entirely. Once access exists, flip the `systems` entry from `WIP` to the right value (or leave it blank) and `narc` picks the host up on its next run.
