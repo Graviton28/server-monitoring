@@ -4,16 +4,16 @@ Server Monitoring — One-Line Install (agent mode)
 Run this on a server you want to monitor (requires git and Node.js 18+
 already installed on it):
 
-curl -fsSL https://raw.githubusercontent.com/Graviton28/server-monitoring/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Graviton28/server-monitoring/main/loki-grafana/install.sh | bash
 
 What it does:
   - Clones (or updates, if already installed) this repo into ~/server-monitoring
-  - Runs npm install
+  - Runs npm install inside ~/server-monitoring/loki-grafana
   - Copies .env.example to .env if one doesn't already exist
 
 What you need to do:
-  - Fill in .env with the real LOKI_URL and credentials
-  - Start the agent — either:
+  - Fill in loki-grafana/.env with the real LOKI_URL and credentials
+  - Start the agent — either (from inside ~/server-monitoring/loki-grafana):
       npm run agent
     or, to keep it running persistently:
       npm install -g pm2

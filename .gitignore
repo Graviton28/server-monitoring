@@ -1,7 +1,7 @@
 node_modules/
 .env
 *.log
-config/targets.json
+loki-grafana/config/targets.json
 bash-scripts/systems
 bash-scripts/emails
 bash-scripts/snitch_targets
